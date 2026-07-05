@@ -18,22 +18,44 @@ const populateTodos = ()=> {
         <input title="text" type="checkbox" class="todo-checkbox" ${todo.isCompleted? "checked" : ""} >
         <span class="todo-text">${todo.title}</span>
         <button class="delete-btn">×</button>
-        </li>` 
+        </li>`
     }
     todoListUl.innerHTML = string
+
+//handle the delete buttons 
+  let deleteBtns = document.querySelectorAll(".delete-btn")
+
+deleteBtns.forEach((element)=> {
+ element.addEventListener("click", (e)=> {
+     console.log(e.target.parentNode.id)
+     todos = todos.filter((todo)=> {
+        return ("todo-" + todo.id) !== e.target.parentNode.id
+    })
+    localStorage.setItem("todos", JSON.stringify(todos))
+    populateTodos()
+ })
+})
 }
 
 
 addTodoBtn.addEventListener("click", ()=> {
       
-    todoText = inputTag.value
     inputTag.value = ""
+    if (todoText.trim().length < 4) {
+        alert("you cannot add a todo that small")
+        return
+    }
     let todo = {
-       id: todos.length, 
+       id:"todo-" + Date.now(), 
        title: todoText,
        isCompleted: false    
     }
+
     todos.push(todo)
+    // todo = todo.map((todo) => {
+    //     return{...todo, id: i}
+    // })
+
     localStorage.setItem("todos", JSON.stringify(todos))
     populateTodos()
 })
@@ -67,8 +89,7 @@ todoCheckboxes.forEach((element)=> {
           
             if ("todo-"+ todo.id == element.parentNode.id) {
                 return {...todo, isCompleted: false}
-            }else{
-                
+            }else{        
                 return todo
             }
          })
@@ -77,3 +98,6 @@ todoCheckboxes.forEach((element)=> {
     }         
     })
 })
+
+
+
